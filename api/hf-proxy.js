@@ -19,8 +19,10 @@ export default async function handler(req, res) {
   try {
     const buffer = Buffer.from(image, "base64");
 
-    // 🔧 Use the new Hugging Face router path
+    // ✅ The correct, updated Hugging Face Router endpoint
     const url = `https://router.huggingface.co/hf-inference/models/${model}`;
+
+    console.log("➡️ Calling Hugging Face model:", url);
 
     const response = await fetch(url, {
       method: "POST",
@@ -31,6 +33,8 @@ export default async function handler(req, res) {
       },
       body: buffer,
     });
+
+    console.log("📡 Response:", response.status, response.statusText);
 
     if (!response.ok) {
       const text = await response.text();
