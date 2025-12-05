@@ -18,7 +18,7 @@ export default async function handler(req, res) {
 
   try {
     const buffer = Buffer.from(image, "base64");
-    const url = `https://api-inference.huggingface.co/models/${model}`;
+    const url = `https://router.huggingface.co/${model}`;
 
     const response = await fetch(url, {
       method: "POST",
