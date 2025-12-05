@@ -1,0 +1,9 @@
+{
+  "name": "hf-proxy-backend",
+  "version": "1.0.0",
+  "main": "api/hf-proxy.js",
+  "type": "module",
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  }
+}
