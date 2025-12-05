@@ -1,4 +1,4 @@
-// api/hf-proxy.js
+// ✅ api/hf-proxy.js
 import fetch from "node-fetch";
 
 export default async function handler(req, res) {
@@ -18,7 +18,9 @@ export default async function handler(req, res) {
 
   try {
     const buffer = Buffer.from(image, "base64");
-    const url = `https://router.huggingface.co/${model}`;
+
+    // 🔧 Use the new Hugging Face router path
+    const url = `https://router.huggingface.co/hf-inference/models/${model}`;
 
     const response = await fetch(url, {
       method: "POST",
