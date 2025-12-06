@@ -1,4 +1,4 @@
-// ✅ api/hf-proxy.js
+// api/hf-proxy.js
 import fetch from "node-fetch";
 
 export default async function handler(req, res) {
@@ -18,11 +18,7 @@ export default async function handler(req, res) {
 
   try {
     const buffer = Buffer.from(image, "base64");
-
-    // ✅ The correct, updated Hugging Face Router endpoint
     const url = `https://router.huggingface.co/hf-inference/models/${model}`;
-
-    console.log("➡️ Calling Hugging Face model:", url);
 
     const response = await fetch(url, {
       method: "POST",
@@ -34,8 +30,6 @@ export default async function handler(req, res) {
       body: buffer,
     });
 
-    console.log("📡 Response:", response.status, response.statusText);
-
     if (!response.ok) {
       const text = await response.text();
       console.error("HF Error:", response.status, text);
@@ -44,7 +38,6 @@ export default async function handler(req, res) {
 
     const imgBuffer = await response.arrayBuffer();
     const base64 = Buffer.from(imgBuffer).toString("base64");
-
     res.status(200).json({ image: base64 });
   } catch (err) {
     console.error("Proxy error:", err);
