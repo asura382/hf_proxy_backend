@@ -1,12 +1,7 @@
 {
   "version": 2,
   "builds": [
-    {
-      "src": "api/hf-proxy.js",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    { "src": "/(.*)", "dest": "api/hf-proxy.js" }
+    { "src": "api/**/*.js", "use": "@vercel/node" }
   ]
 }
+

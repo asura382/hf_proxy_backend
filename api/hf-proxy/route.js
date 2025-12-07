@@ -4,6 +4,7 @@ import fetch from "node-fetch";
 export async function POST(req) {
   try {
     const { model, image } = await req.json();
+
     if (!model || !image) {
       return new Response(
         JSON.stringify({ error: "Missing model or image" }),
@@ -45,9 +46,13 @@ export async function POST(req) {
     return new Response(JSON.stringify({ image: base64 }), { status: 200 });
   } catch (err) {
     console.error("Proxy error:", err);
-    return new Response(
-      JSON.stringify({ error: err.message }),
-      { status: 500 }
-    );
+    return new Response(JSON.stringify({ error: err.message }), { status: 500 });
   }
+}
+
+export async function GET() {
+  return new Response(
+    JSON.stringify({ message: "Use POST method for this endpoint" }),
+    { status: 405 }
+  );
 }
