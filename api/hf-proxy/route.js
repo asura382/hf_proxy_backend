@@ -1,25 +1,22 @@
 // api/hf-proxy/route.js
 import fetch from "node-fetch";
 
-export async function POST(req) {
+export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
+  const { model, image } = req.body;
+  if (!model || !image) {
+    return res.status(400).json({ error: "Missing model or image" });
+  }
+
+  const hfApiKey = process.env.HUGGINGFACE_API_KEY;
+  if (!hfApiKey) {
+    return res.status(500).json({ error: "Missing HF API key in server" });
+  }
+
   try {
-    const { model, image } = await req.json();
-
-    if (!model || !image) {
-      return new Response(
-        JSON.stringify({ error: "Missing model or image" }),
-        { status: 400 }
-      );
-    }
-
-    const hfApiKey = process.env.HUGGINGFACE_API_KEY;
-    if (!hfApiKey) {
-      return new Response(
-        JSON.stringify({ error: "Missing HF API key in server" }),
-        { status: 500 }
-      );
-    }
-
     const buffer = Buffer.from(image, "base64");
     const url = `https://router.huggingface.co/hf-inference/models/${model}`;
 
@@ -35,24 +32,14 @@ export async function POST(req) {
 
     if (!response.ok) {
       const text = await response.text();
-      return new Response(
-        JSON.stringify({ error: text }),
-        { status: response.status }
-      );
+      return res.status(response.status).json({ error: text });
     }
 
     const imgBuffer = await response.arrayBuffer();
     const base64 = Buffer.from(imgBuffer).toString("base64");
-    return new Response(JSON.stringify({ image: base64 }), { status: 200 });
+    res.status(200).json({ image: base64 });
   } catch (err) {
     console.error("Proxy error:", err);
-    return new Response(JSON.stringify({ error: err.message }), { status: 500 });
+    res.status(500).json({ error: err.message });
   }
-}
-
-export async function GET() {
-  return new Response(
-    JSON.stringify({ message: "Use POST method for this endpoint" }),
-    { status: 405 }
-  );
 }
